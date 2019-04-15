@@ -1,24 +1,30 @@
 #!usr/bin/python3
 
-import pandas as pd
-import os
-import boto3
-
-from datetime import datetime
+from scrapper import Scrapper
+from csvcreator import CsvCreator
 
 
-class CsvCreator:
+class Dispatcher:
 
-    def __init__(self, row_data, column_name, company_name):
-        self.__company_name = company_name
-        self.__data = pd.DataFrame(row_data, columns=column_name)
+    def __init__(self, company_name):
+        self.__scrapper = Scrapper(company_name)
 
-    def create_cvs_file(self):
-        __path = os.getcwd()
-        s3 = boto3.client('s3')
-        name = '%s_%s.csv' % (self.__company_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        path_file = __path + '/csv_files/%s_%s.csv' % (
-        self.__company_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        self.__data.to_csv(path_file, index=False)
-        s3.upload_file(Filename=path_file, Bucket='scrapperbucket', Key='scrapper_csv/%s' % name)
-        os.remove(path_file)
+    def run(self):
+        self.__scrapper._connect_to_website()
+        return self.__scrapper.scan_url()
+
+    def create_csv(self):
+        csv_creator = CsvCreator(data_object.get_row_data_matrix(), data_object.get_column_name(), company_name)
+        csv_creator.create_cvs_file()
+
+if __name__ == '__main__':
+    company_name = input("Company name please: ")
+    dispatcher = Dispatcher(company_name)
+
+    flag = True
+
+    while flag:
+        flag, data_object = dispatcher.run()
+
+    dispatcher.create_csv()
+

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import threading, time, sched
+import time
 from dispatcher import Dispatcher
 
 class Runner:
@@ -20,7 +20,7 @@ class Runner:
             job_dispatcher = Dispatcher(self.__name)
             job_dispatcher.run()
             print("Saved and Done.")
-            time.sleep(60)
+            time.sleep(180)
 
 if __name__ == '__main__':
     runner = Runner()

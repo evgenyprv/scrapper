@@ -1,11 +1,11 @@
-import requests
-import re
-
-from bs4 import BeautifulSoup
 #!/usr/bin/python3
+
+import requests
+from bs4 import BeautifulSoup
 from data import OptionsData
 
 class Scrapper:
+
     __page_counter = 1
 
     def __init__(self, company_name):
@@ -54,7 +54,7 @@ class Scrapper:
         max_page_number = 1
         page_numbers = soup.find('div', {'id': 'pagerContainer'}).find_all('li')
 
-        if(len(page_numbers) > 1):
+        if len(page_numbers) > 1:
             for number in page_numbers:
                 if number.get_text().isdigit():
                     max_page_number = int(number.get_text())
