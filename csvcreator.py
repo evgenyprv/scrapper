@@ -1,6 +1,8 @@
 #!/usr/bin/python3
+
 import pandas as pd
 import os
+import boto3
 
 from datetime import datetime
 
@@ -13,4 +15,10 @@ class CsvCreator:
 
     def create_cvs_file(self):
         __path = os.getcwd()
-        self.__data.to_csv(__path+'/csv_files/%s_%s.csv' % (self.__company_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S')), index=False)
+        s3 = boto3.client('s3')
+        name = '%s_%s.csv' % (self.__company_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        path_file = __path + '/csv_files/%s_%s.csv' % (
+        self.__company_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        self.__data.to_csv(path_file, index=False)
+        s3.upload_file(Filename=path_file, Bucket='scrapperbucket', Key='scrapper_csv/%s' % name)
+        os.remove(path_file)
